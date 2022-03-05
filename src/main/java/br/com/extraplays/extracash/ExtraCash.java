@@ -3,11 +3,11 @@ package br.com.extraplays.extracash;
 import br.com.extraplays.extracash.account.AccountManager;
 import br.com.extraplays.extracash.commands.executor.CashCommand;
 import br.com.extraplays.extracash.database.DatabaseManager;
+import br.com.extraplays.extracash.keys.KeyManager;
 import br.com.extraplays.extracash.listeners.EntityDeathListener;
 import br.com.extraplays.extracash.listeners.PlayerJoinListener;
 import br.com.extraplays.extracash.placeholder.HookPlaceholder;
 import br.com.extraplays.extracash.tasks.SaveData;
-import br.com.extraplays.extracash.utils.KeysUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -22,6 +22,8 @@ public final class ExtraCash extends JavaPlugin {
 
     private DatabaseManager databaseManager;
     private AccountManager accountManager;
+
+    @Getter  private KeyManager keyManager;
     @Getter
     private static ExtraCash instance;
 
@@ -36,6 +38,7 @@ public final class ExtraCash extends JavaPlugin {
 
         instance = this;
         accountManager = new AccountManager();
+        keyManager = new KeyManager();
 
         file = new File(getDataFolder(), "shop.yml");
         if (!file.exists()) {

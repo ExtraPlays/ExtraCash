@@ -1,9 +1,16 @@
-package br.com.extraplays.extracash.utils;
+package br.com.extraplays.extracash.keys;
 
-public class KeysUtil {
+import lombok.Getter;
+import lombok.Setter;
 
-    public static String generateKey(){
+public class Key {
 
+    @Getter @Setter String Key;
+    @Getter @Setter boolean used;
+    @Getter @Setter String createdAt, expiryTime, createdBy;
+    @Getter @Setter int value;
+
+    public Key(){
         String[] characters = {
                 "0", "1", "b", "2", "4", "5", "6", "7", "8", "9",
                 "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k",
@@ -18,7 +25,7 @@ public class KeysUtil {
             sb.append(characters[position]);
         }
 
-        return sb.toString();
+         setKey(sb.toString());
     }
 
 
