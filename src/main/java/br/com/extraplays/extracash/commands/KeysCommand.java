@@ -16,7 +16,7 @@ public class KeysCommand extends ExtraCommand {
     public void execute(CommandSender sender, String[] args) {
 
         if (args.length != 2){
-            sender.sendMessage(ColorUtil.colored("&7Uso correto: &a/cash keys create <amount>"));
+            sender.sendMessage(ColorUtil.colored("&7Uso correto: &a/cash keys create <amount> "));
         }
 
         Player p = (Player)sender;
