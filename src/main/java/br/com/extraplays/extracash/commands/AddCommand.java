@@ -16,6 +16,10 @@ public class AddCommand extends ExtraCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
+        if (args.length != 2){
+            sender.sendMessage(ColorUtil.colored("&7Uso correto: &a/cash add <player> <amount>"));
+        }
+
         if (args.length == 2) {
 
             // 0 = player, 1 = ammount

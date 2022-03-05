@@ -1,0 +1,20 @@
+## use mysql
+mysql:
+  enable: true
+  host: 'localhost'
+  user: 'root'
+  password: ''
+  database: 'minecraft'
+
+## earn cash on kill mobs?
+mobs:
+  enable: true
+  ## chance
+  chance: 10
+  ## see more https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+  mobs:
+    ZOMBIE: 10
+    SPIDER: 10
+    SKELETON: 10
+    PIG: 10
+    PLAYER: 100
