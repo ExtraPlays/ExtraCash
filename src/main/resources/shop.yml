@@ -1,0 +1,26 @@
+title: "&8Cash Shop"
+rows: 3
+items:
+  '1':
+    price: 500
+    material: DIAMOND_SWORD
+    slot: 10
+    amount: 1
+    name: "&aDestruidora de lares"
+    lore:
+      - ""
+      - "&7Espada basica"
+      - "&7Preço: &a@price"
+    enchants:
+      - "damage_all:4"
+  '2':
+    price: 2000
+    material: DIAMOND_BLOCK
+    amount: 30
+    slot: 11
+    name: "&aDestruidora de lares"
+    lore:
+      - ""
+      - "&7Espada basica"
+      - "&7Preço: &a@price"
+    enchants:
