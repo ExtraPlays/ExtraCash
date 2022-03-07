@@ -54,6 +54,16 @@ public class DatabaseManager {
                     ") "
             );
 
+            statement.execute("CREATE TABLE IF NOT EXISTS keys (" +
+                    "id int (11) NOT NULL AUTO_INCREMENT," +
+                    "key varchar(100)," +
+                    "value int," +
+                    "created_at timestamp DEFAULT CURRENT_TIMESTAMP," +
+                    "used boolean DEFAULT false" +
+                    "PRIMARY KEY (id)" +
+                    ")"
+            );
+
         }catch (SQLException e){
             Bukkit.getLogger().info("[ExtraCash] Erro Mysql");
         }
