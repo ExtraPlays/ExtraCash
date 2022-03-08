@@ -100,7 +100,7 @@ public final class ExtraCash extends JavaPlugin {
             databaseManager.createTable();
             databaseManager.loadAccounts();
 
-            new SaveData().runTaskTimerAsynchronously(this, 60L, 20L * 1200);
+            new SaveData().runTaskTimerAsynchronously(this, 60L, 20L * 2400);
 
         }else {
 

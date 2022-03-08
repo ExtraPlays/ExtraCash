@@ -61,7 +61,7 @@ public class DatabaseManager {
                     "created_at timestamp DEFAULT CURRENT_TIMESTAMP," +
                     "used boolean DEFAULT false" +
                     "PRIMARY KEY (id)" +
-                    ")"
+                    ") "
             );
 
         }catch (SQLException e){
