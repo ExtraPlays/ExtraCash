@@ -14,15 +14,25 @@ import org.bukkit.entity.Player;
 
 public class KeysCommand extends ExtraCommand {
 
-    public KeysCommand(String description) {
-        super(description);
+    public KeysCommand(String usage) {
+        super(usage);
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
 
         if (args.length != 2){
-            sender.sendMessage(ColorUtil.colored("&7Uso correto: &a/cash keys create <amount> "));
+
+            if (sender.hasPermission("extracash.admin")){
+                for (String message : ExtraCash.getInstance().getMessages().config().getStringList("subcommand-keys-help-admin")){
+                    sender.sendMessage(ColorUtil.colored(message));
+                }
+            }else {
+                for (String message : ExtraCash.getInstance().getMessages().config().getStringList("subcommand-keys-help")){
+                    sender.sendMessage(ColorUtil.colored(message));
+                }
+            }
+
         }
 
         if (args.length == 2){
@@ -54,9 +64,11 @@ public class KeysCommand extends ExtraCommand {
 
                 Key key = keyManager.getKey(keyString);
 
+                String used = key.isUsed() ? "Sim" : "Não";
+
                 TextComponent message = new TextComponent(ColorUtil.colored(" &7Informações da Key: &a&n" + key.getKey()));
                 message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new Text(ColorUtil.colored("Criada em: &a" + key.getCreatedAt() + "\n&fValor: &a" + key.getValue() + "\n&fUsada: &anão"))));
+                        new Text(ColorUtil.colored("Criada em: &a" + key.getCreatedAt() + "\n&fValor: &a" + key.getValue() + "\n&fUsada: &a" + used))));
 
                 p.sendMessage(ColorUtil.colored(""));
                 p.spigot().sendMessage(message);

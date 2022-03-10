@@ -4,6 +4,7 @@ import br.com.extraplays.extracash.account.AccountManager;
 import br.com.extraplays.extracash.commands.*;
 import br.com.extraplays.extracash.ExtraCash;
 import br.com.extraplays.extracash.utils.ColorUtil;
+import br.com.extraplays.extracash.utils.MessageUtil;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,14 +18,15 @@ import java.util.Map;
 public class CashCommand implements CommandExecutor {
 
     private final Map<String, ExtraCommand> commands = ImmutableMap.<String, ExtraCommand>builder()
-            .put("help", new InfoCommand("Command Help"))
-            .put("add", new AddCommand( "adiciona cash para o player"))
-            .put("remove", new RemoveCommand( "remove o cash de um player"))
-            .put("set", new SetCommand("Seta o cash de um player"))
+            .put("help", new InfoCommand(""))
+            .put("add", new AddCommand( "/cash add <player> <amount>"))
+            .put("remove", new RemoveCommand( "/cash remove <player> <amount>"))
+            .put("set", new SetCommand("/cash set <player> <amount>"))
             .put("top", new TopCommand("mostra os players com mais cash do servidor"))
-            .put("give", new GiveCommand("envia cash para um jogador"))
-            .put("shop", new ShopCommand("Abre a loja de cash"))
-            .put("keys", new KeysCommand("Keys"))
+            .put("give", new GiveCommand("/cash give <player> <amount>"))
+            .put("shop", new ShopCommand("/cash shop"))
+            .put("keys", new KeysCommand("/cash keys"))
+            .put("use", new UseCommand("/cash use key"))
             .build();
 
     @Override
@@ -40,12 +42,16 @@ public class CashCommand implements CommandExecutor {
 
             if (accountManager.hasAccount(p.getUniqueId().toString())){
 
-                sender.sendMessage(ColorUtil.colored("&6✪ &7Seu cash: &6" + accountManager.getFormatedBalance(p.getUniqueId().toString())));
+                sender.sendMessage(MessageUtil.getMessage("command-cash")
+                        .replace("@player", p.getName())
+                        .replace("@amount", String.valueOf(accountManager.getFormatedBalance(p.getUniqueId().toString()))));
 
             }else {
 
                 accountManager.createAccount(p.getUniqueId().toString());
-                sender.sendMessage(ColorUtil.colored("&6✪ &7Seu cash: &6" + accountManager.getFormatedBalance(p.getUniqueId().toString())));
+                sender.sendMessage(MessageUtil.getMessage("command-cash")
+                        .replace("@player", p.getName())
+                        .replace("@amount", String.valueOf(accountManager.getFormatedBalance(p.getUniqueId().toString()))));
 
             }
 

@@ -3,6 +3,7 @@ package br.com.extraplays.extracash.commands;
 import br.com.extraplays.extracash.account.Account;
 import br.com.extraplays.extracash.commands.executor.ExtraCommand;
 import br.com.extraplays.extracash.utils.ColorUtil;
+import br.com.extraplays.extracash.utils.MessageUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
@@ -11,15 +12,15 @@ import org.bukkit.entity.Player;
 
 public class GiveCommand extends ExtraCommand {
 
-    public GiveCommand(String Description){
-        super(Description);
+    public GiveCommand(String usage){
+        super(usage);
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
 
         if (args.length != 2){
-            sender.sendMessage(ColorUtil.colored("&7Uso correto: &a/cash give <player> <amount> "));
+            sender.sendMessage(MessageUtil.getMessage("incorrect-usage").replace("@usage", this.usage));
         }
 
         if (args.length == 2){
@@ -36,13 +37,15 @@ public class GiveCommand extends ExtraCommand {
                         if (accountManager.getFormatedBalance(p.getUniqueId().toString()) >= amount) {
                             accountManager.removeBalance(p.getUniqueId().toString(), amount);
                             accountManager.addBalance(target.getUniqueId().toString(), amount);
-                            p.sendMessage(ColorUtil.colored("&7Você enviou &6" + amount + " &7para o player &6" + target.getName()));
+                            sender.sendMessage(MessageUtil.getMessage("subcommand-give")
+                                    .replace("@player", target.getName())
+                                    .replace("@amount", String.valueOf(amount)));
                         }else {
-                            p.sendMessage(ColorUtil.colored("&cVocê não possui essa quantidade de cash"));
+                            p.sendMessage(MessageUtil.getMessage("insufficient-amount"));
                         }
 
                     }else {
-                        p.sendMessage(ColorUtil.colored("&cVocê não pode enviar cash para você mesmo."));
+                        p.sendMessage(MessageUtil.getMessage("is-yourself"));
                     }
 
                 }else {

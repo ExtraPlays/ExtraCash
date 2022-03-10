@@ -2,12 +2,14 @@ package br.com.extraplays.extracash;
 
 import br.com.extraplays.extracash.account.AccountManager;
 import br.com.extraplays.extracash.commands.executor.CashCommand;
+import br.com.extraplays.extracash.config.ExtraConfig;
 import br.com.extraplays.extracash.database.DatabaseManager;
 import br.com.extraplays.extracash.keys.KeyManager;
 import br.com.extraplays.extracash.listeners.EntityDeathListener;
 import br.com.extraplays.extracash.listeners.PlayerJoinListener;
 import br.com.extraplays.extracash.placeholder.HookPlaceholder;
 import br.com.extraplays.extracash.tasks.SaveData;
+import br.com.extraplays.extracash.utils.MessageUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -33,12 +35,16 @@ public final class ExtraCash extends JavaPlugin {
     private FileConfiguration shopConfig, accountsConfig;
 
 
+    @Getter
+    public ExtraConfig messages;
+
     @Override
     public void onEnable() {
 
         instance = this;
         accountManager = new AccountManager();
         keyManager = new KeyManager();
+        messages = new ExtraConfig("messages");
 
         file = new File(getDataFolder(), "shop.yml");
         if (!file.exists()) {
@@ -51,6 +57,7 @@ public final class ExtraCash extends JavaPlugin {
         }
         shopConfig = YamlConfiguration.loadConfiguration(file);
 
+        MessageUtil.LoadMessages(messages.config());
         saveDefaultConfig();
         setupDatabase();
         setupPlaceholders();
@@ -65,6 +72,7 @@ public final class ExtraCash extends JavaPlugin {
 
         if (getConfig().getBoolean("mysql.enable")){
             databaseManager.saveAccounts();
+            databaseManager.saveKeys();
             databaseManager.close();
         }else {
             try{
@@ -99,6 +107,7 @@ public final class ExtraCash extends JavaPlugin {
 
             databaseManager.createTable();
             databaseManager.loadAccounts();
+            databaseManager.loadKeys();
 
             new SaveData().runTaskTimerAsynchronously(this, 60L, 20L * 2400);
 

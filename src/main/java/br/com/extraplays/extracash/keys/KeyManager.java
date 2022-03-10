@@ -8,17 +8,15 @@ import java.util.List;
 
 public class KeyManager {
 
-    List<Key> KeysList = new ArrayList<>();
+    public List<Key> KeysList = new ArrayList<>();
 
     public Key getKey(String keyString){
 
         Key key = null;
         for (Key k : KeysList) {
-
             if (k.getKey().equals(keyString)) {
                 key = k;
             }
-
         }
 
         return key;
@@ -36,6 +34,15 @@ public class KeyManager {
         KeysList.add(key);
 
         return key;
+
+    }
+
+    public void setUsed(String key){
+
+        Key k = getKey(key);
+        k.setUsed(true);
+        KeysList.remove(k);
+        KeysList.add(k);
 
     }
 

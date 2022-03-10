@@ -2,6 +2,7 @@ package br.com.extraplays.extracash.commands;
 
 import br.com.extraplays.extracash.commands.executor.ExtraCommand;
 import br.com.extraplays.extracash.utils.ColorUtil;
+import br.com.extraplays.extracash.utils.MessageUtil;
 import br.com.extraplays.extracash.utils.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -9,15 +10,15 @@ import org.bukkit.command.CommandSender;
 
 public class SetCommand extends ExtraCommand {
 
-    public SetCommand(String description) {
-        super(description);
+    public SetCommand(String usage) {
+        super(usage);
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
 
         if (args.length != 2){
-            sender.sendMessage(ColorUtil.colored("&7Uso correto: &a/cash set <player> <amount> "));
+            sender.sendMessage(MessageUtil.getMessage("incorrect-usage").replace("@usage", this.usage));
         }
 
         if (args.length == 2) {
@@ -31,7 +32,9 @@ public class SetCommand extends ExtraCommand {
 
                 accountManager.setBalance(player.getUniqueId().toString(), amount);
 
-                sender.sendMessage(ColorUtil.colored("&7Você setou o &6Cash &7de &6" + player.getName() + " &7Para " + amount + " Cash"));
+                sender.sendMessage(MessageUtil.getMessage("subcommand-set")
+                        .replace("@player", player.getName())
+                        .replace("@amount", String.valueOf(amount)));
 
             }
 

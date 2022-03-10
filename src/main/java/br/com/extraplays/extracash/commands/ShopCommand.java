@@ -21,8 +21,8 @@ import java.util.Locale;
 
 public class ShopCommand extends ExtraCommand {
 
-    public ShopCommand(String description) {
-        super(description);
+    public ShopCommand(String usage) {
+        super(usage);
     }
 
     @Override

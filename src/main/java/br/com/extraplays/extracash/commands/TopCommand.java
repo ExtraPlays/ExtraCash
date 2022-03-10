@@ -6,8 +6,8 @@ import org.bukkit.command.CommandSender;
 public class TopCommand extends ExtraCommand {
 
 
-    public TopCommand(String description) {
-        super(description);
+    public TopCommand(String usage) {
+        super(usage);
     }
 
     @Override

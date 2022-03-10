@@ -3,6 +3,8 @@ package br.com.extraplays.extracash.database;
 import br.com.extraplays.extracash.account.Account;
 import br.com.extraplays.extracash.account.AccountManager;
 import br.com.extraplays.extracash.ExtraCash;
+import br.com.extraplays.extracash.keys.Key;
+import br.com.extraplays.extracash.keys.KeyManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -16,6 +18,8 @@ public class DatabaseManager {
     String host, user, pass, database;
     @Getter @Setter
     Connection connection;
+
+    private final KeyManager keyManager = ExtraCash.getInstance().getKeyManager();
 
     public DatabaseManager(String host,String user,String pass,String database){
 
@@ -44,7 +48,6 @@ public class DatabaseManager {
     public void createTable() {
 
         try (Statement statement = getConnection().createStatement()){
-            Bukkit.getLogger().info("[ExtraCash] Carregando tabelas");
 
             statement.execute("CREATE TABLE IF NOT EXISTS accounts (" +
                     "id int(11) NOT NULL AUTO_INCREMENT, " +
@@ -54,19 +57,31 @@ public class DatabaseManager {
                     ") "
             );
 
-            statement.execute("CREATE TABLE IF NOT EXISTS keys (" +
-                    "id int (11) NOT NULL AUTO_INCREMENT," +
-                    "key varchar(100)," +
-                    "value int," +
-                    "created_at timestamp DEFAULT CURRENT_TIMESTAMP," +
-                    "used boolean DEFAULT false" +
-                    "PRIMARY KEY (id)" +
-                    ") "
-            );
+            Bukkit.getLogger().info("[ExtraCash] Tabela accounts carregada.");
 
         }catch (SQLException e){
-            Bukkit.getLogger().info("[ExtraCash] Erro Mysql");
+            Bukkit.getLogger().info("[ExtraCash] Erro ao carregar a tabela accounts.");
         }
+
+        try (Statement statement = getConnection().createStatement()){
+
+
+            statement.execute("CREATE TABLE IF NOT EXISTS `keys` (" +
+                    "`id` int (11) NOT NULL AUTO_INCREMENT," +
+                    "`key` varchar(100)," +
+                    "`value` int," +
+                    "`created_at` timestamp DEFAULT CURRENT_TIMESTAMP," +
+                    "`used` boolean DEFAULT false," +
+                    "PRIMARY KEY (id)" +
+                    ")"
+            );
+
+            Bukkit.getLogger().info("[ExtraCash] Tabela keys carregada.");
+
+        }catch (SQLException e){
+            Bukkit.getLogger().info("[ExtraCash] Erro ao carregar a tabela keys. \n" + e.getMessage());
+        }
+
 
     }
 
@@ -102,6 +117,80 @@ public class DatabaseManager {
         } catch (SQLException throwables) {
 
             Bukkit.getLogger().warning("[ExtraCash] Não foi possivel carregar os dados." + throwables.getMessage());
+
+        }
+
+    }
+
+    public void loadKeys(){
+
+        try (Statement statement = connection.createStatement();
+            ResultSet res = statement.executeQuery("SELECT * FROM `keys`")) {
+
+            while (res.next()){
+
+                Key key = new Key();
+                key.setKey(res.getString("key"));
+                key.setValue(res.getInt("value"));
+                key.setUsed(res.getBoolean("used"));
+
+                keyManager.KeysList.add(key);
+
+            }
+
+
+        }catch (SQLException e){
+            Bukkit.getLogger().warning("[ExtraCash] Não foi possivel carregar as keys. \n" + e.getMessage());
+        }
+
+    }
+
+    public void saveKeys(){
+
+        String querySelect = "SELECT * from `keys` WHERE `key` = ?";
+        String queryInsert = "INSERT INTO `keys` (`key`, value, used) VALUES (?,?,?)";
+        String queryUpdate = "UPDATE `keys` SET used = ? WHERE `key` = ?";
+
+        for (Key k : keyManager.KeysList) {
+
+            try(PreparedStatement statement = connection.prepareStatement(querySelect)){
+
+                statement.setString(1, k.getKey());
+
+                ResultSet res = statement.executeQuery();
+                if (res.next()) {
+//                    UPDATE
+                    try (PreparedStatement statement2 = connection.prepareStatement(queryUpdate)){
+
+                        statement2.setBoolean(1, k.isUsed());
+                        statement2.setString(2, k.getKey());
+
+                        statement2.executeUpdate();
+
+                    }catch (SQLException e){
+                        e.printStackTrace();
+                    }
+
+                }else {
+//                    INSERT
+                    try (PreparedStatement statement2 = connection.prepareStatement(queryInsert)){
+
+                        statement2.setString(1, k.getKey());
+                        statement2.setInt(2, k.getValue());
+                        statement2.setBoolean(3, k.isUsed());
+                        statement2.executeUpdate();
+
+                    }catch (SQLException e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+                res.close();
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
 
         }
 
@@ -147,6 +236,8 @@ public class DatabaseManager {
                     }
 
                 }
+
+                resultSet.close();
 
             }catch (SQLException e){
                 e.printStackTrace();
