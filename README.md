@@ -5,8 +5,8 @@ Adicione uma segunda economia em seu servidor.
 #### Recursos:
 - Suporta 1.8 à 1.18.
 - MySQL e SQLite.
-- Mensagens configuráveis
-- PlaceHolder
+- Mensagens configuráveis.
+- PlaceHolder.
 
 #### Placeholders
 
