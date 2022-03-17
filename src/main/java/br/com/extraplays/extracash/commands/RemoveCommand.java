@@ -18,8 +18,12 @@ public class RemoveCommand extends ExtraCommand{
     public void execute(CommandSender sender, String[] args) {
 
         if (args.length != 2){
-
             sender.sendMessage(MessageUtil.getMessage("incorrect-usage").replace("@usage", this.usage));
+        }
+
+        if (!sender.hasPermission("extracash.admin")) {
+            sender.sendMessage(MessageUtil.getMessage("no-permission"));
+            return;
         }
 
         if (args.length == 2) {
@@ -38,7 +42,7 @@ public class RemoveCommand extends ExtraCommand{
                         .replace("@amount", String.valueOf(amount)));
 
             }else {
-
+                sender.sendMessage(MessageUtil.getMessage("not-found"));
             }
 
 

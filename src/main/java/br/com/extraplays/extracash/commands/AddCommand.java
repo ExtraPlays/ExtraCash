@@ -21,21 +21,28 @@ public class AddCommand extends ExtraCommand {
             sender.sendMessage(MessageUtil.getMessage("incorrect-usage").replace("@usage", this.usage));
         }
 
+        if (!sender.hasPermission("extracash.admin")) {
+            sender.sendMessage(MessageUtil.getMessage("no-permission"));
+            return;
+        }
+
         if (args.length == 2) {
 
             // 0 = player, 1 = ammount
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
+            OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
             int amount = Integer.parseInt(args[1]);
 
-            if(accountManager.hasAccount(player.getUniqueId().toString())){
+            if(accountManager.hasAccount(target.getUniqueId().toString())){
 
-                accountManager.addBalance(player.getUniqueId().toString(), amount);
+                accountManager.addBalance(target.getUniqueId().toString(), amount);
 
                 sender.sendMessage(MessageUtil.getMessage("subcommand-add")
-                        .replace("@player", player.getName())
+                        .replace("@player", target.getName())
                         .replace("@amount", String.valueOf(amount)));
 
+            }else {
+                sender.sendMessage(MessageUtil.getMessage("not-found"));
             }
             
 

@@ -6,10 +6,10 @@ import br.com.extraplays.extracash.utils.ColorUtil;
 import br.com.extraplays.extracash.utils.MessageUtil;
 import org.bukkit.command.CommandSender;
 
-public class InfoCommand extends ExtraCommand {
+public class HelpCommand extends ExtraCommand {
 
 
-    public InfoCommand(String description) {
+    public HelpCommand(String description) {
         super(description);
     }
 

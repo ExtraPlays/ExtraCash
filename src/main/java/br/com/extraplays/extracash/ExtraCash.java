@@ -49,6 +49,7 @@ public final class ExtraCash extends JavaPlugin {
         saveDefaultConfig();
         setupListeners();
         setupCommand();
+        setupPlaceholders();
         setupDatabase();
         databaseManager = new DatabaseManager(storage);
         databaseManager.loadAccounts();
@@ -62,6 +63,7 @@ public final class ExtraCash extends JavaPlugin {
 
         databaseManager.saveAccounts();
         databaseManager.saveKeys();
+        storage.disconnect();
 
     }
 

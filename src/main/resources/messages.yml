@@ -3,6 +3,7 @@ no-permission: '&cVocê não tem permissão para utilizar este comando.'
 incorrect-usage: '&7Uso correto: &a@usage'
 insufficient-amount: '&cVocê não possui dinheiro suficiente para completar esta ação.'
 is-yourself: '&cVocê não pode enviar para si mesmo.'
+not-found: '&cJogador não encontrado.'
 
 command-cash: '&7Você possui &6@amount &7de cash'
 subcommand-set: '&7Você alterou o saldo de &a@player &7para &a@amount'

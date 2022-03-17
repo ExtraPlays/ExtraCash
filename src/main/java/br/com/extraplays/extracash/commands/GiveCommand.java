@@ -49,7 +49,7 @@ public class GiveCommand extends ExtraCommand {
                     }
 
                 }else {
-                    p.sendMessage(ColorUtil.colored("&cO player não foi encontrado"));
+                    p.sendMessage(MessageUtil.getMessage("not-found"));
                 }
 
             }else {

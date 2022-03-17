@@ -21,6 +21,11 @@ public class SetCommand extends ExtraCommand {
             sender.sendMessage(MessageUtil.getMessage("incorrect-usage").replace("@usage", this.usage));
         }
 
+        if (!sender.hasPermission("extracash.admin")) {
+            sender.sendMessage(MessageUtil.getMessage("no-permission"));
+            return;
+        }
+
         if (args.length == 2) {
 
             // 0 = player, 1 = ammount
@@ -36,6 +41,8 @@ public class SetCommand extends ExtraCommand {
                         .replace("@player", player.getName())
                         .replace("@amount", String.valueOf(amount)));
 
+            }else {
+                sender.sendMessage(MessageUtil.getMessage("not-found"));
             }
 
 

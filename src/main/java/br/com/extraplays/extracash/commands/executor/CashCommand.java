@@ -3,7 +3,6 @@ package br.com.extraplays.extracash.commands.executor;
 import br.com.extraplays.extracash.account.AccountManager;
 import br.com.extraplays.extracash.commands.*;
 import br.com.extraplays.extracash.ExtraCash;
-import br.com.extraplays.extracash.utils.ColorUtil;
 import br.com.extraplays.extracash.utils.MessageUtil;
 import com.google.common.collect.ImmutableMap;
 import org.bukkit.command.Command;
@@ -18,7 +17,7 @@ import java.util.Map;
 public class CashCommand implements CommandExecutor {
 
     private final Map<String, ExtraCommand> commands = ImmutableMap.<String, ExtraCommand>builder()
-            .put("help", new InfoCommand(""))
+            .put("help", new HelpCommand(""))
             .put("add", new AddCommand( "/cash add <player> <amount>"))
             .put("remove", new RemoveCommand( "/cash remove <player> <amount>"))
             .put("set", new SetCommand("/cash set <player> <amount>"))

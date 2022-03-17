@@ -5,6 +5,7 @@ import br.com.extraplays.extracash.commands.executor.ExtraCommand;
 import br.com.extraplays.extracash.keys.Key;
 import br.com.extraplays.extracash.keys.KeyManager;
 import br.com.extraplays.extracash.utils.ColorUtil;
+import br.com.extraplays.extracash.utils.MessageUtil;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -39,43 +40,52 @@ public class KeysCommand extends ExtraCommand {
 
             Player p = (Player)sender;
 
-            KeyManager keyManager = ExtraCash.getInstance().getKeyManager();
 
-            if (args[0].equalsIgnoreCase("create")) {
+            if (p.hasPermission("extracash.admin")){
 
-                int value = Integer.parseInt(args[1]);
+                KeyManager keyManager = ExtraCash.getInstance().getKeyManager();
 
-                Key key = keyManager.createKey(value, "teste", p.getName());
+                if (args[0].equalsIgnoreCase("create")) {
 
-                TextComponent message = new TextComponent(ColorUtil.colored(" &7Nova &a&lKEY &7registrada: &a&n" + key.getKey()));
-                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Clique para copiar a key")));
-                message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, key.getKey()));
+                    int value = Integer.parseInt(args[1]);
 
-                p.sendMessage(ColorUtil.colored(""));
-                p.spigot().sendMessage(message);
-                p.sendMessage(ColorUtil.colored(" &7Valor: &a" + key.getValue()));
-                p.sendMessage(ColorUtil.colored(""));
+                    Key key = keyManager.createKey(value, "teste", p.getName());
 
+                    TextComponent message = new TextComponent(ColorUtil.colored(" &7Nova &a&lKEY &7registrada: &a&n" + key.getKey()));
+                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Clique para copiar a key")));
+                    message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, key.getKey()));
+
+                    p.sendMessage(ColorUtil.colored(""));
+                    p.spigot().sendMessage(message);
+                    p.sendMessage(ColorUtil.colored(" &7Valor: &a" + key.getValue()));
+                    p.sendMessage(ColorUtil.colored(""));
+
+                }
+
+                if (args[0].equalsIgnoreCase("info")){
+
+                    String keyString = args[1];
+
+                    Key key = keyManager.getKey(keyString);
+
+                    String used = key.isUsed() ? "Sim" : "Não";
+
+                    TextComponent message = new TextComponent(ColorUtil.colored(" &7Informações da Key: &a&n" + key.getKey()));
+                    message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            new Text(ColorUtil.colored("Criada em: &a" + key.getCreatedAt() + "\n&fValor: &a" + key.getValue() + "\n&fUsada: &a" + used))));
+
+                    p.sendMessage(ColorUtil.colored(""));
+                    p.spigot().sendMessage(message);
+                    p.sendMessage(ColorUtil.colored(""));
+
+
+                }
+
+            }else {
+                p.sendMessage(MessageUtil.getMessage("no-permission"));
             }
 
-            if (args[0].equalsIgnoreCase("info")){
 
-                String keyString = args[1];
-
-                Key key = keyManager.getKey(keyString);
-
-                String used = key.isUsed() ? "Sim" : "Não";
-
-                TextComponent message = new TextComponent(ColorUtil.colored(" &7Informações da Key: &a&n" + key.getKey()));
-                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                        new Text(ColorUtil.colored("Criada em: &a" + key.getCreatedAt() + "\n&fValor: &a" + key.getValue() + "\n&fUsada: &a" + used))));
-
-                p.sendMessage(ColorUtil.colored(""));
-                p.spigot().sendMessage(message);
-                p.sendMessage(ColorUtil.colored(""));
-
-
-            }
         }
 
     }

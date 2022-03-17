@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class AccountManager {
 
     public HashMap<String, Account> accountMap = new HashMap<>();
-    public HashMap<String, Account> topMap = new LinkedHashMap<>();
 
     public Account getAccount(String ownerUUID){
         return accountMap.get(ownerUUID);
@@ -46,35 +45,11 @@ public class AccountManager {
         getAccount(ownerUUID).setBalance(amount);
     }
 
-    public Map<String, Integer> getTop(int startin, int stopin) {
-        Map<String, Integer> top = new LinkedHashMap<>(stopin);
-        ArrayList<Account> players = new ArrayList<>();
-        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
-            Account account = getAccount(player.getUniqueId().toString());
-            if (account.getBalance() == 0) continue;
-
-            players.add(account);
-        }
-
-        players.sort(Account::compareTo);
-
-        System.out.println(players.size());
-
-        for (int i = startin; i < stopin; i++) {
-            try {
-                Account account = players.get(i);
-                top.put(Bukkit.getPlayer(account.getUuid()).getName(), account.getBalance());
-            } catch (Exception e) {
-                break;
-            }
-        }
-        return top;
-    }
-
     public List<Account> getRanking() {
         return accountMap.values()
                 .stream()
-                .sorted(Comparator.comparingDouble(account -> account.balance))
+                .sorted(Comparator.comparingInt(Account::getBalance).reversed())
+                .limit(10) // TESTE
                 .collect(Collectors.toList());
     }
 
