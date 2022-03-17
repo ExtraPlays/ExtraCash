@@ -24,7 +24,7 @@ public class CashCommand implements CommandExecutor {
             .put("set", new SetCommand("/cash set <player> <amount>"))
             .put("top", new TopCommand("mostra os players com mais cash do servidor"))
             .put("give", new GiveCommand("/cash give <player> <amount>"))
-            .put("shop", new ShopCommand("/cash shop"))
+//            .put("shop", new ShopCommand("/cash shop"))
             .put("keys", new KeysCommand("/cash keys"))
             .put("use", new UseCommand("/cash use key"))
             .build();

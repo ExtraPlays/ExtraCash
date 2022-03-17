@@ -17,35 +17,23 @@ import br.com.extraplays.extracash.utils.MessageUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
-
+@Getter
 public final class ExtraCash extends JavaPlugin {
 
-    @Getter
+
     private StorageType storageType;
-    @Getter
     private Storage storage;
 
     private DatabaseManager databaseManager;
     private AccountManager accountManager;
 
-    @Getter  private KeyManager keyManager;
-    @Getter
-    private static ExtraCash instance;
+    private KeyManager keyManager;
 
-    @Getter
-    private File file, accountsFile;
-    @Getter
-    private FileConfiguration shopConfig, accountsConfig;
+    @Getter private static ExtraCash instance;
 
-
-    @Getter
-    public ExtraConfig messages;
+    public ExtraConfig messages, shop;
 
     @Override
     public void onEnable() {
@@ -53,30 +41,18 @@ public final class ExtraCash extends JavaPlugin {
         instance = this;
         accountManager = new AccountManager();
         keyManager = new KeyManager();
+
         messages = new ExtraConfig("messages");
-
-        file = new File(getDataFolder(), "shop.yml");
-        if (!file.exists()) {
-            try{
-                file.createNewFile();
-                saveResource("shop.yml", true);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
-        shopConfig = YamlConfiguration.loadConfiguration(file);
-
+        shop = new ExtraConfig("shop");
         MessageUtil.LoadMessages(messages.config());
-        saveDefaultConfig();
 
+        saveDefaultConfig();
+        setupListeners();
+        setupCommand();
         setupDatabase();
         databaseManager = new DatabaseManager(storage);
         databaseManager.loadAccounts();
         databaseManager.loadKeys();
-
-        setupPlaceholders();
-        setupListeners();
-        setupCommand();
 
 
     }
@@ -112,12 +88,12 @@ public final class ExtraCash extends JavaPlugin {
                     section.getString("database")
             );
 
-//            new SaveData().runTaskTimerAsynchronously(this, 60L, 20L * 1200);
-
         }else {
             storageType = StorageType.SQLITE;
             storage = new SQLite();
         }
+
+        new SaveData().runTaskTimerAsynchronously(this, 60L, 20L * 1200);
 
     }
 

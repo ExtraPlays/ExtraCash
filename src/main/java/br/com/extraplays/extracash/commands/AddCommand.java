@@ -37,6 +37,7 @@ public class AddCommand extends ExtraCommand {
                         .replace("@amount", String.valueOf(amount)));
 
             }
+            
 
 
         }

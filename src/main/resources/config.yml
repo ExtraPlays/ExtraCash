@@ -1,6 +1,6 @@
 ## use mysql
 mysql:
-  enable: true
+  enable: false
   host: 'localhost'
   user: 'root'
   password: ''

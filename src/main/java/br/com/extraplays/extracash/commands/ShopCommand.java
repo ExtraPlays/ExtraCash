@@ -29,7 +29,7 @@ public class ShopCommand extends ExtraCommand {
     public void execute(CommandSender sender, String[] args) {
 
         Player p = (Player) sender;
-        FileConfiguration config = ExtraCash.getInstance().getShopConfig();
+        FileConfiguration config = ExtraCash.getInstance().getShop().config();
 
         Inventory inv = Bukkit.createInventory(null, config.getInt("rows") * 9, ColorUtil.colored(config.getString("title")));
 

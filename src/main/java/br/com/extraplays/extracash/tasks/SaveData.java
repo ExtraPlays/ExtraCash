@@ -10,6 +10,7 @@ public class SaveData extends BukkitRunnable {
     public void run() {
 
         ExtraCash.getInstance().getDatabaseManager().saveAccounts();
+        ExtraCash.getInstance().getDatabaseManager().saveKeys();
         Bukkit.getLogger().info("[ExtraCash] Salvando dados na database.");
 
     }
