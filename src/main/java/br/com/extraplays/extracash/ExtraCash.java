@@ -4,6 +4,10 @@ import br.com.extraplays.extracash.account.AccountManager;
 import br.com.extraplays.extracash.commands.executor.CashCommand;
 import br.com.extraplays.extracash.config.ExtraConfig;
 import br.com.extraplays.extracash.database.DatabaseManager;
+import br.com.extraplays.extracash.database.Storage;
+import br.com.extraplays.extracash.database.StorageType;
+import br.com.extraplays.extracash.database.mysql.MySQL;
+import br.com.extraplays.extracash.database.sqlite.SQLite;
 import br.com.extraplays.extracash.keys.KeyManager;
 import br.com.extraplays.extracash.listeners.EntityDeathListener;
 import br.com.extraplays.extracash.listeners.PlayerJoinListener;
@@ -21,6 +25,11 @@ import java.io.File;
 import java.io.IOException;
 
 public final class ExtraCash extends JavaPlugin {
+
+    @Getter
+    private StorageType storageType;
+    @Getter
+    private Storage storage;
 
     private DatabaseManager databaseManager;
     private AccountManager accountManager;
@@ -59,7 +68,12 @@ public final class ExtraCash extends JavaPlugin {
 
         MessageUtil.LoadMessages(messages.config());
         saveDefaultConfig();
+
         setupDatabase();
+        databaseManager = new DatabaseManager(storage);
+        databaseManager.loadAccounts();
+        databaseManager.loadKeys();
+
         setupPlaceholders();
         setupListeners();
         setupCommand();
@@ -70,17 +84,8 @@ public final class ExtraCash extends JavaPlugin {
     @Override
     public void onDisable() {
 
-        if (getConfig().getBoolean("mysql.enable")){
-            databaseManager.saveAccounts();
-            databaseManager.saveKeys();
-            databaseManager.close();
-        }else {
-            try{
-                accountManager.saveAccounts();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        }
+        databaseManager.saveAccounts();
+        databaseManager.saveKeys();
 
     }
 
@@ -94,39 +99,26 @@ public final class ExtraCash extends JavaPlugin {
     }
 
     public void setupDatabase(){
+
         if (getConfig().getBoolean("mysql.enable")){
 
             ConfigurationSection section = getConfig().getConfigurationSection("mysql");
 
-            databaseManager = new DatabaseManager(
-                section.getString("host"),
-                section.getString("user"),
-                section.getString("password"),
-                section.getString("database")
+            storageType = StorageType.MYSQL;
+            storage = new MySQL(
+                    section.getString("host"),
+                    section.getString("user"),
+                    section.getString("password"),
+                    section.getString("database")
             );
 
-            databaseManager.createTable();
-            databaseManager.loadAccounts();
-            databaseManager.loadKeys();
-
-            new SaveData().runTaskTimerAsynchronously(this, 60L, 20L * 2400);
+//            new SaveData().runTaskTimerAsynchronously(this, 60L, 20L * 1200);
 
         }else {
-
-            accountsFile = new File(getDataFolder(), "accounts.yml");
-            if (!accountsFile.exists()){
-                try {
-                    accountsFile.createNewFile();
-                }catch(IOException exception) {
-                    exception.printStackTrace();
-                }
-            }
-            accountsConfig = YamlConfiguration.loadConfiguration(accountsFile);
-
-
-            accountManager.loadAccounts();
-
+            storageType = StorageType.SQLITE;
+            storage = new SQLite();
         }
+
     }
 
     public void setupPlaceholders(){

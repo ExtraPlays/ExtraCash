@@ -14,93 +14,16 @@ import java.util.Map;
 
 public class DatabaseManager {
 
-    @Getter @Setter
-    String host, user, pass, database;
-    @Getter @Setter
-    Connection connection;
-
+    private final Storage storage;
     private final KeyManager keyManager = ExtraCash.getInstance().getKeyManager();
 
-    public DatabaseManager(String host,String user,String pass,String database){
-
-        setHost(host);
-        setUser(user);
-        setPass(pass);
-        setDatabase(database);
-
-        try {
-//            Class.forName("com.mysql.jdbc.Driver");
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            long timeout = System.currentTimeMillis();
-
-            setConnection(DriverManager.getConnection("jdbc:mysql://" + getHost() + ":3306/" + getDatabase(), getUser(), getPass()));
-
-            long endTime = (System.currentTimeMillis() - timeout);
-
-            Bukkit.getLogger().info("[ExtraCash] Conectado com ao banco de dados. " + endTime + "Ms");
-
-        } catch (ClassNotFoundException | SQLException e) {
-            Bukkit.getLogger().info("[ExtraCash] Não foi possivel conectar com o banco de dados. " + e.getMessage());
-        }
-
-    }
-
-    public void createTable() {
-
-        try (Statement statement = getConnection().createStatement()){
-
-            statement.execute("CREATE TABLE IF NOT EXISTS accounts (" +
-                    "id int(11) NOT NULL AUTO_INCREMENT, " +
-                    "uuid char(36), " +
-                    "balance int DEFAULT 0 NOT NULL," +
-                    "PRIMARY KEY (id)" +
-                    ") "
-            );
-
-            Bukkit.getLogger().info("[ExtraCash] Tabela accounts carregada.");
-
-        }catch (SQLException e){
-            Bukkit.getLogger().info("[ExtraCash] Erro ao carregar a tabela accounts.");
-        }
-
-        try (Statement statement = getConnection().createStatement()){
-
-
-            statement.execute("CREATE TABLE IF NOT EXISTS `keys` (" +
-                    "`id` int (11) NOT NULL AUTO_INCREMENT," +
-                    "`key` varchar(100)," +
-                    "`value` int," +
-                    "`created_at` timestamp DEFAULT CURRENT_TIMESTAMP," +
-                    "`used` boolean DEFAULT false," +
-                    "PRIMARY KEY (id)" +
-                    ")"
-            );
-
-            Bukkit.getLogger().info("[ExtraCash] Tabela keys carregada.");
-
-        }catch (SQLException e){
-            Bukkit.getLogger().info("[ExtraCash] Erro ao carregar a tabela keys. \n" + e.getMessage());
-        }
-
-
-    }
-
-    public void close(){
-
-        if (getConnection() != null) {
-
-            try {
-                Bukkit.getLogger().info("[ExtraCash] Desativando conexao com o banco de dados");
-                getConnection().close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+    public DatabaseManager(Storage storage){
+        this.storage = storage;
     }
 
     public void loadAccounts(){
 
-        try (Statement statement = connection.createStatement();
+        try (Statement statement = storage.getConnection().createStatement();
              ResultSet res = statement.executeQuery("SELECT * FROM accounts")){
 
             while (res.next()) {
@@ -124,7 +47,7 @@ public class DatabaseManager {
 
     public void loadKeys(){
 
-        try (Statement statement = connection.createStatement();
+        try (Statement statement = storage.getConnection().createStatement();
             ResultSet res = statement.executeQuery("SELECT * FROM `keys`")) {
 
             while (res.next()){
@@ -153,14 +76,14 @@ public class DatabaseManager {
 
         for (Key k : keyManager.KeysList) {
 
-            try(PreparedStatement statement = connection.prepareStatement(querySelect)){
+            try(PreparedStatement statement = storage.getConnection().prepareStatement(querySelect)){
 
                 statement.setString(1, k.getKey());
 
                 ResultSet res = statement.executeQuery();
                 if (res.next()) {
 //                    UPDATE
-                    try (PreparedStatement statement2 = connection.prepareStatement(queryUpdate)){
+                    try (PreparedStatement statement2 = storage.getConnection().prepareStatement(queryUpdate)){
 
                         statement2.setBoolean(1, k.isUsed());
                         statement2.setString(2, k.getKey());
@@ -173,7 +96,7 @@ public class DatabaseManager {
 
                 }else {
 //                    INSERT
-                    try (PreparedStatement statement2 = connection.prepareStatement(queryInsert)){
+                    try (PreparedStatement statement2 = storage.getConnection().prepareStatement(queryInsert)){
 
                         statement2.setString(1, k.getKey());
                         statement2.setInt(2, k.getValue());
@@ -206,7 +129,7 @@ public class DatabaseManager {
 
         for (Map.Entry<String, Account> accounts : manager.accountMap.entrySet()){
 
-            try (PreparedStatement statement = connection.prepareStatement(querySelect)){
+            try (PreparedStatement statement = storage.getConnection().prepareStatement(querySelect)){
 
                 statement.setString(1, accounts.getKey());
 
@@ -214,7 +137,7 @@ public class DatabaseManager {
 
                 if (resultSet.next()){
 
-                    try (PreparedStatement statement2 = connection.prepareStatement(queryUpdate)){
+                    try (PreparedStatement statement2 = storage.getConnection().prepareStatement(queryUpdate)){
 
                         statement2.setString(2, accounts.getKey());
                         statement2.setInt(1, accounts.getValue().getBalance());
@@ -227,7 +150,7 @@ public class DatabaseManager {
 
                 }else {
 
-                    try (PreparedStatement statement2 = connection.prepareStatement(queryInsert)){
+                    try (PreparedStatement statement2 = storage.getConnection().prepareStatement(queryInsert)){
                         statement2.setString(1, accounts.getKey());
                         statement2.setInt(2, accounts.getValue().getBalance());
                         statement2.executeUpdate();

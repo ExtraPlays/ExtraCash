@@ -41,7 +41,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <outputDirectory>C:\Users\Vitor\Desktop\servidor\plugins</outputDirectory>
+                            <outputDirectory>D:\server2\plugins</outputDirectory>
 <!--                            <shadedArtifactAttached>true</shadedArtifactAttached>-->
 <!--                            <shadedClassifierName>shaded</shadedClassifierName>-->
                         </configuration>

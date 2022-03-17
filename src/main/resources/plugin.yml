@@ -4,6 +4,7 @@ main: br.com.extraplays.extracash.ExtraCash
 authors: [ ExtraPlays ]
 description: Adicione uma segunda economia para o seu servidor
 website: extraplays.xyz
+softdepend: ["PlaceholderAPI"]
 commands:
   cash:
     description: Mostra o cash

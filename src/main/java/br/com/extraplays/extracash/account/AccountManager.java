@@ -1,18 +1,18 @@
 package br.com.extraplays.extracash.account;
 
 import br.com.extraplays.extracash.ExtraCash;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class AccountManager {
 
     public HashMap<String, Account> accountMap = new HashMap<>();
-
     public HashMap<String, Account> topMap = new LinkedHashMap<>();
 
     public Account getAccount(String ownerUUID){
@@ -46,26 +46,36 @@ public class AccountManager {
         getAccount(ownerUUID).setBalance(amount);
     }
 
-    public void loadAccounts(){
+    public Map<String, Integer> getTop(int startin, int stopin) {
+        Map<String, Integer> top = new LinkedHashMap<>(stopin);
+        ArrayList<Account> players = new ArrayList<>();
+        for (OfflinePlayer player : Bukkit.getOfflinePlayers()) {
+            Account account = getAccount(player.getUniqueId().toString());
+            if (account.getBalance() == 0) continue;
 
-        FileConfiguration config = ExtraCash.getInstance().getAccountsConfig();
-        ConfigurationSection section = config.getConfigurationSection("accounts");
+            players.add(account);
+        }
 
-        if (section != null) {
-            for (String s : section.getKeys(false)) {
-                accountMap.put(s, new Account(s, section.getInt(s)));
+        players.sort(Account::compareTo);
+
+        System.out.println(players.size());
+
+        for (int i = startin; i < stopin; i++) {
+            try {
+                Account account = players.get(i);
+                top.put(Bukkit.getPlayer(account.getUuid()).getName(), account.getBalance());
+            } catch (Exception e) {
+                break;
             }
         }
-
+        return top;
     }
 
-    public  void saveAccounts() throws IOException {
-        for (Map.Entry<String, Account> accounts : accountMap.entrySet()){
-
-            ExtraCash.getInstance().getAccountsConfig().set("accounts." + accounts.getKey(), accounts.getValue().getBalance());
-            ExtraCash.getInstance().getAccountsConfig().save(ExtraCash.getInstance().getAccountsFile());
-
-        }
+    public List<Account> getRanking() {
+        return accountMap.values()
+                .stream()
+                .sorted(Comparator.comparingDouble(account -> account.balance))
+                .collect(Collectors.toList());
     }
 
 }
