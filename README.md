@@ -10,10 +10,9 @@ Adicione uma segunda economia em seu servidor.
 
 #### Placeholders
 
- - %extracash_cash% 
+ - %extracash_cash% - Mostra o cash do jogador. 
  
  
-
 
 #### Comandos e Permissões
 
