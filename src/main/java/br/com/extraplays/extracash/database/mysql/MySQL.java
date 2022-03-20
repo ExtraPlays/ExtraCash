@@ -61,10 +61,9 @@ public class MySQL implements Storage {
         try (Statement statement = getConnection().createStatement()){
 
             statement.execute("CREATE TABLE IF NOT EXISTS accounts (" +
-                    "id int(11) NOT NULL AUTO_INCREMENT, " +
                     "uuid char(36), " +
                     "balance int DEFAULT 0 NOT NULL," +
-                    "PRIMARY KEY (id)" +
+                    "PRIMARY KEY (uuid)" +
                     ") "
             );
 

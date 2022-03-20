@@ -27,7 +27,17 @@ public class GiveCommand extends ExtraCommand {
 
             Player p = (Player) sender;
             OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-            int amount = Integer.parseInt(args[1]);
+
+            int amount;
+
+            try {
+                amount = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+
+                p.sendMessage(MessageUtil.getMessage("number-exception"));
+                return;
+            }
+
             if (accountManager.hasAccount(p.getUniqueId().toString())){
 
                 if (accountManager.hasAccount(target.getUniqueId().toString())){
@@ -35,8 +45,8 @@ public class GiveCommand extends ExtraCommand {
                     if (!target.getUniqueId().toString().equals(p.getUniqueId().toString())) {
 
                         if (accountManager.getFormatedBalance(p.getUniqueId().toString()) >= amount) {
-                            accountManager.removeBalance(p.getUniqueId().toString(), amount);
-                            accountManager.addBalance(target.getUniqueId().toString(), amount);
+                            accountManager.getAccount(p.getUniqueId().toString()).removeBalance(amount);
+                            accountManager.getAccount(target.getUniqueId().toString()).addBalance(amount);
                             sender.sendMessage(MessageUtil.getMessage("subcommand-give")
                                     .replace("@player", target.getName())
                                     .replace("@amount", String.valueOf(amount)));
@@ -52,11 +62,7 @@ public class GiveCommand extends ExtraCommand {
                     p.sendMessage(MessageUtil.getMessage("not-found"));
                 }
 
-            }else {
-
             }
-
         }
-
     }
 }

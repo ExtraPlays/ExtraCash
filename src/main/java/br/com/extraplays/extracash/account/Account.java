@@ -1,16 +1,24 @@
 package br.com.extraplays.extracash.account;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
 
 @AllArgsConstructor
+@Data
 public class Account implements Comparable<Account> {
 
-    @Getter @Setter private String uuid;
-    @Getter @Setter public int balance;
+    private String uuid;
+    private int balance;
+
+    public void removeBalance(int amount){
+        balance -= amount;
+    }
+
+    public void addBalance(int amount){
+        balance += amount;
+    }
 
     @Override
     public int compareTo(@NotNull Account o) {

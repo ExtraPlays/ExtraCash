@@ -18,8 +18,13 @@ public class EntityDeathListener implements Listener {
     public void onEntityDeath(EntityDeathEvent e){
 
         if (!ExtraCash.getInstance().getConfig().getBoolean("mobs.enable")) return;
-        if (e.getEntity().getKiller() == null) return;
 
+        Player killer = e.getEntity().getKiller();
+
+        if (e.getEntity().getKiller() == null) return;
+        
+        
+        
         ConfigurationSection section = ExtraCash.getInstance().getConfig().getConfigurationSection("mobs.mobs");
         AccountManager accountManager = ExtraCash.getInstance().getAccountManager();
         int chance = ExtraCash.getInstance().getConfig().getInt("mobs.chance");
@@ -33,8 +38,8 @@ public class EntityDeathListener implements Listener {
                 int amount = section.getInt(s);
 
                 if (chan < chance){
-                    accountManager.addBalance(e.getEntity().getKiller().getUniqueId().toString(), amount);
-                    ActionBarUtil.sendActionBar(e.getEntity().getKiller(), "&a+ &6" + amount + " ✪");
+                    accountManager.getAccount(killer.getUniqueId().toString()).addBalance(amount);
+                    ActionBarUtil.sendActionBar(killer, "&a+ &6" + amount + " ✪");
                 }
 
             }

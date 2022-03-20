@@ -1,14 +1,18 @@
 package br.com.extraplays.extracash.keys;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class KeyManager {
 
     public List<Key> KeysList = new ArrayList<>();
+    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy H:m");
 
     public Key getKey(String keyString){
 
@@ -22,28 +26,15 @@ public class KeyManager {
         return key;
     }
 
-    public Key createKey(int value, String expiryDate, String createdBy){
-
-        Date date = new Date();
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy H:m");
-
-        Key key = new Key();
-        key.setValue(value);
-        key.setCreatedAt(dateFormat.format(date));
-        key.setCreatedBy(createdBy);
+    public Key createNewKey(int value){
+        Key key = new Key(RandomStringUtils.random(10, "abcdefghijklmnopqrstuvwxyz123456789"), false, dateFormat.format(new Date()), value);
         KeysList.add(key);
-
         return key;
-
     }
 
     public void setUsed(String key){
-
         Key k = getKey(key);
         k.setUsed(true);
-        KeysList.remove(k);
-        KeysList.add(k);
-
     }
 
 

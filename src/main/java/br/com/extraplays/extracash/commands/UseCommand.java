@@ -26,7 +26,7 @@ public class UseCommand extends ExtraCommand {
             if (key != null) {
 
                 if (!key.isUsed()) {
-                    accountManager.addBalance(p.getUniqueId().toString(), key.getValue());
+                    accountManager.getAccount(p.getUniqueId().toString()).addBalance(key.getValue());
                     keyManager.setUsed(args[0]);
                     p.sendMessage(ColorUtil.colored("&7Você ganhou &6" + key.getValue() + " &7Cash. \n&aFaça bom uso!"));
                 }else {

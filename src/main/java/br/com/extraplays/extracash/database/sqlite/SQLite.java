@@ -66,8 +66,7 @@ public class SQLite implements Storage {
         try (Statement statement = getConnection().createStatement()){
 
             statement.execute("CREATE TABLE IF NOT EXISTS accounts (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "uuid TEXT, " +
+                    "uuid VARCHAR(36) PRIMARY KEY, " +
                     "balance INTEGER DEFAULT 0 NOT NULL" +
                     ") "
             );

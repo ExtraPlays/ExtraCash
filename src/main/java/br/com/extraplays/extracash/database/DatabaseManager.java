@@ -52,11 +52,9 @@ public class DatabaseManager {
 
             while (res.next()){
 
-                Key key = new Key();
+                Key key = keyManager.createNewKey(res.getInt("value"));
                 key.setKey(res.getString("key"));
-                key.setValue(res.getInt("value"));
                 key.setUsed(res.getBoolean("used"));
-
                 keyManager.KeysList.add(key);
 
             }

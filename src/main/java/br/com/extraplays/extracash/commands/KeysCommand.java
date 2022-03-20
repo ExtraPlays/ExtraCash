@@ -47,9 +47,17 @@ public class KeysCommand extends ExtraCommand {
 
                 if (args[0].equalsIgnoreCase("create")) {
 
-                    int value = Integer.parseInt(args[1]);
+                    int amount;
 
-                    Key key = keyManager.createKey(value, "teste", p.getName());
+                    try {
+                        amount = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException e) {
+
+                        p.sendMessage(MessageUtil.getMessage("number-exception"));
+                        return;
+                    }
+
+                    Key key = keyManager.createNewKey(amount);
 
                     TextComponent message = new TextComponent(ColorUtil.colored(" &7Nova &a&lKEY &7registrada: &a&n" + key.getKey()));
                     message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Clique para copiar a key")));

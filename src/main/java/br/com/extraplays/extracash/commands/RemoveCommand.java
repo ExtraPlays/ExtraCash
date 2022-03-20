@@ -7,6 +7,7 @@ import br.com.extraplays.extracash.utils.NumberUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class RemoveCommand extends ExtraCommand{
 
@@ -29,20 +30,29 @@ public class RemoveCommand extends ExtraCommand{
         if (args.length == 2) {
 
             // 0 = player, 1 = ammount
+            Player p = (Player)sender;
+            OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
-            OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
-            int amount = Integer.parseInt(args[1]);
+            int amount;
 
-            if(accountManager.hasAccount(player.getUniqueId().toString())){
+            try {
+                amount = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
 
-                accountManager.removeBalance(player.getUniqueId().toString(), amount);
+                p.sendMessage(MessageUtil.getMessage("number-exception"));
+                return;
+            }
 
-                sender.sendMessage(MessageUtil.getMessage("subcommand-remove")
-                        .replace("@player", player.getName())
+            if(accountManager.hasAccount(target.getUniqueId().toString())){
+
+                accountManager.getAccount(target.getUniqueId().toString()).removeBalance(amount);
+
+                p.sendMessage(MessageUtil.getMessage("subcommand-remove")
+                        .replace("@player", target.getName())
                         .replace("@amount", String.valueOf(amount)));
 
             }else {
-                sender.sendMessage(MessageUtil.getMessage("not-found"));
+                p.sendMessage(MessageUtil.getMessage("not-found"));
             }
 
 

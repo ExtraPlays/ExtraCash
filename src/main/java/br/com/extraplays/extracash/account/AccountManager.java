@@ -33,14 +33,6 @@ public class AccountManager {
 
     }
 
-    public void addBalance(String ownerUUID, int amount){
-        getAccount(ownerUUID).balance += amount;
-    }
-
-    public void removeBalance(String ownerUUID, int amount){
-        getAccount(ownerUUID).balance -= amount;
-    }
-
     public void setBalance(String ownerUUID, int amount) {
         getAccount(ownerUUID).setBalance(amount);
     }
