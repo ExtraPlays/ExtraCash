@@ -14,6 +14,7 @@ public class Account implements Comparable<Account> {
 
     public void removeBalance(int amount){
         balance -= amount;
+        if (balance < 0) balance = 0;
     }
 
     public void addBalance(int amount){
